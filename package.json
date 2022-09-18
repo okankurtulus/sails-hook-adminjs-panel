@@ -1,0 +1,36 @@
+{
+  "name": "sails-hook-adminjs-panel",
+  "version": "1.0.0",
+  "description": "SailsJS hook to use magic of AdminJS seamlessly",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "mocha -R spec"
+  },
+  "repository": {
+    "type": "git",
+    "url": "sails-hook-adminjs-panel"
+  },
+  "sails": {
+    "isHook": true
+  },
+  "dependencies": {
+    "@admin-bro/express": "^3.1.0",
+    "admin-bro": "^4.0.1",
+    "express": "^4.17.1",
+    "express-formidable": "^1.2.0",
+    "express-session": "^1.17.2"
+  },
+  "devDependencies": {
+    "sails": "^1.0.0"
+  },
+  "keywords": [
+    "sails",
+    "adminbro",
+    "adminbrojs",
+    "admin",
+    "panel",
+    "sails"
+  ],
+  "author": "Okan Kurtulus",
+  "license": "MIT"
+}
