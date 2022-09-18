@@ -16,7 +16,7 @@
   "dependencies": {
     "@admin-bro/express": "^3.1.0",
     "admin-bro": "^4.0.1",
-    "escape-string-regexp": "^5.0.0",
+    "escape-regexp": "^0.0.1",
     "express": "^4.17.1",
     "express-formidable": "^1.2.0",
     "express-session": "^1.17.2"
