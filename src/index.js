@@ -14,7 +14,8 @@ const express = require('express');
 const AdminBro = require('admin-bro');
 const WaterlineAdapter = require('./adapter/waterlineAdapter');
 const path = require('path');
-const defaultsObj = require('./lib/defaults');
+const defaultsObj = require('./lib/config/defaults');
+const fs = require('fs');
 AdminBro.registerAdapter(WaterlineAdapter);
 
 async function autoBindSailsModels() {
@@ -43,6 +44,20 @@ module.exports = function (sails) {
 
       sails.log.info('Initializing adminBroJS hook... (sails-hook-adminbrojs)');
 
+      // Check if configuration file is present, otherwise copy it
+      try {
+        const configFilePath = path.join(__dirname, '../../../config/adminjsPanel.js');
+        const exists = fs.existsSync(configFilePath);
+        if (!exists) {
+          await fs.copyFile(path.join(__dirname, 'lib/config/defaults.js'), configFilePath, () => {});
+          sails.log.info('[Sails Hook][adminJSPanel] : Success Adding the configuration file.');
+        } else {
+          sails.log.info('[Sails Hook][adminJSPanel] : Configuration file already present.');
+        }        
+      } catch (err) {
+        sails.log.error(err);
+      }
+
       const { routes, assets } = AdminBro.Router;
 
       var eventsToWaitFor = [];
@@ -54,7 +69,7 @@ module.exports = function (sails) {
         const adminBro = new AdminBro({
           database: [],
           resources: sailsModels,
-          rootPath: defaultsObj["adminjs-panel"].rootPath,
+          rootPath: sails.config.adminJSPanel.rootPath,
           dashboard: {
             component: AdminBro.bundle('./lib/react/my-dashboard-component')
           },
