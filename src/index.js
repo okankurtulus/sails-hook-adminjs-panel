@@ -18,13 +18,31 @@ const defaultsObj = require('./lib/config/defaults');
 const fs = require('fs');
 AdminBro.registerAdapter(WaterlineAdapter);
 
-async function autoBindSailsModels() {
+const injectCrsfIfRequired = (originalResponse, request, context) => {
+  if (sails.config.security.csrf) {
+    //Inject csrf token if possible
+    const csrf = request && request.csrfToken && request.csrfToken();
+    originalResponse.record.params._csrf = csrf;
+  }
+  return originalResponse
+}
+
+function autoBindSailsModels() {
   const resources = [];
   const models = sails.hooks.orm.models;
   Object.entries(models).forEach(([key, value]) => {
     const prototype = Object.getPrototypeOf(value);
     if (prototype.hasSchema) {
-       resources.push(prototype);
+      resources.push({
+        resource: prototype,
+        options: {
+          actions: {
+            edit: { after: [injectCrsfIfRequired] },
+            delete: { after: [injectCrsfIfRequired] },
+            bulkDelete: { after: [injectCrsfIfRequired] },
+            new: {  after: [injectCrsfIfRequired] } },
+          },
+        });
       }
   });
   return resources;
@@ -60,11 +78,8 @@ module.exports = function (sails) {
 
       const { routes, assets } = AdminBro.Router;
 
-      var eventsToWaitFor = [];
-      eventsToWaitFor.push('router:before');
-      sails.after(eventsToWaitFor, async () => {
-        //Parse sails models to generate sequelize models automatically
-        const sailsModels = await autoBindSailsModels();
+      sails.on('router:before', () => {
+        const sailsModels = autoBindSailsModels();
 
         const adminBro = new AdminBro({
           database: [],
@@ -122,8 +137,8 @@ module.exports = function (sails) {
           // we have to change routes defined in AdminBro from {recordId} to :recordId
           const expressPath = routerPath.replace(/{/g, ':').replace(/}/g, '');
           const routePath = `${route.method} ${expressPath}`;
-          sails.router.bind(expressPath, handler, route.method, {csrf: false});
-          //sails.config.security.csrf = false; //CSRF Must be disabled for POST requests to be processed
+          sails.router.bind(expressPath, handler, route.method);
+          sails.config.routes[routePath] = { csrf: false };
         });
 
         assets.forEach((asset) => {
@@ -134,8 +149,6 @@ module.exports = function (sails) {
             res.sendFile(path.resolve(asset.src));
           });
         });
-
-        sails.log.info('AdminBro Panel is loaded');
       });
 
       return cb();
