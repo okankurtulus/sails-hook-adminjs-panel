@@ -48,9 +48,13 @@ function autoBindSailsModels() {
   return resources;
 }
 
-async function isUserSuperAdmin(req, res, next) {
-  //Add some authentication here
-  return true;
+function ensureDirectoryExistence(filePath) {
+  var dirname = path.dirname(filePath);
+  if (fs.existsSync(dirname)) {
+    return true;
+  }
+  ensureDirectoryExistence(dirname);
+  fs.mkdirSync(dirname);
 }
 
 module.exports = function (sails) {
@@ -67,6 +71,7 @@ module.exports = function (sails) {
         const configFilePath = path.join(__dirname, '../../../config/adminjsPanel.js');
         const exists = fs.existsSync(configFilePath);
         if (!exists) {
+          ensureDirectoryExistence(configFilePath);
           await fs.copyFile(path.join(__dirname, 'lib/config/defaults.js'), configFilePath, () => {});
           sails.log.info('[Sails Hook][adminJSPanel] : Success Adding the configuration file.');
         } else {
@@ -74,6 +79,47 @@ module.exports = function (sails) {
         }        
       } catch (err) {
         sails.log.error(err);
+      }
+
+      // Check if js files presents, otherwise copy it
+      try {
+        const configFilePath = path.join(__dirname, '../../../assets/adminJSPanel/adminbro.js');
+        const exists = fs.existsSync(configFilePath);
+        if (!exists) {
+          ensureDirectoryExistence(configFilePath);
+          await fs.copyFile(path.join(__dirname, 'lib/config/adminbro.js'), configFilePath, () => { });
+          sails.log.info('[Sails Hook][adminJSPanel] : Success Adding the adminJSPanel javascript file.');
+        } else {
+          sails.log.info('[Sails Hook][adminJSPanel] : adminJSPanel javascript file already present.');
+        }
+      } catch (err) {
+        sails.log.error(err);
+      }
+
+      // Check if css files presents, otherwise copy it
+      try {
+        const configFilePath = path.join(__dirname, '../../../assets/adminJSPanel/adminbro.css');
+        const exists = fs.existsSync(configFilePath);
+        if (!exists) {
+          ensureDirectoryExistence(configFilePath);
+          await fs.copyFile(path.join(__dirname, 'lib/config/adminbro.css'), configFilePath, () => { });
+          sails.log.info('[Sails Hook][adminJSPanel] : Success Adding the adminJSPanel CSS file.');
+        } else {
+          sails.log.info('[Sails Hook][adminJSPanel] : adminJSPanel CSS file already present.');
+        }
+      } catch (err) {
+        sails.log.error(err);
+      }
+
+      // Check if isDeleted field is required for models
+      if (sails.config.adminJSPanel.doNotActuallyDeleteRecords) {
+        sails.log.info('[Sails Hook][adminJSPanel] : Checking if isDeleted field Exists for models.');
+        if (sails.config.models.attributes.isDeleted) {
+          sails.log.info('[Sails Hook][adminJSPanel] : isDeleted field exists, no action is required.');
+        } else {
+          sails.config.models.attributes.isDeleted = { type: 'boolean', defaultsTo: false };
+          sails.log.info('[Sails Hook][adminJSPanel] : isDeleted field is created for models.');
+        }
       }
 
       const { routes, assets } = AdminBro.Router;
@@ -89,8 +135,8 @@ module.exports = function (sails) {
             component: AdminBro.bundle('./lib/react/my-dashboard-component')
           },
           assets: {
-            styles: ['/adminbro/adminbro.css'],
-            scripts: ['/adminbro/adminbro.js'],
+            styles: ['/adminJSPanel/adminbro.css'],
+            scripts: ['/adminJSPanel/adminbro.js'],
           },
           branding: {
             companyName: 'AdminJS-Panel',
@@ -105,12 +151,6 @@ module.exports = function (sails) {
         routes.forEach((route) => {
           const handler = async function (req, res, next) {
             const controller = new route.Controller({ admin: adminBro }, req.session && req.session.adminUser);
-
-            const isSuperAdmin = await isUserSuperAdmin(req, res, next);
-            if (req.originalUrl.indexOf('asset') === -1 && !isSuperAdmin) {
-              res.redirect('/');
-            }
-
             const {
               params, query } = req;
             const method = req.method.toLowerCase();
@@ -133,11 +173,17 @@ module.exports = function (sails) {
               res.send(html);
             }
           };
+          const authCheckedHandler = async function(req, res, next) {
+            return sails.config.adminJSPanel.auth(req, res, () => {
+              handler(req, res, next);
+            });
+          }
           const routerPath = `${rootPath}${route.path}`;
           // we have to change routes defined in AdminBro from {recordId} to :recordId
           const expressPath = routerPath.replace(/{/g, ':').replace(/}/g, '');
           const routePath = `${route.method} ${expressPath}`;
-          sails.router.bind(expressPath, handler, route.method);
+
+          sails.router.bind(expressPath, authCheckedHandler, route.method);
           sails.config.routes[routePath] = { csrf: false };
         });
 

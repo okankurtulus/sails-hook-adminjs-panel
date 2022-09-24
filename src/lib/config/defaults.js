@@ -15,10 +15,14 @@ module.exports = {
   adminJSPanel: {
 
     /***************************************************************************
-    | Most of the time, the following options does not not be changed.
+    | Most of the time, the following options does not need to be changed.
     | However, you are free to change and make it fit to your project constraints.
     ***************************************************************************/
    
-    rootPath: '/adminPanel',      //The path where the admin page will serve, ex: localhost:1337/adminPanel
+    rootPath: '/adminPanel',          //The path where the admin page will serve, ex: localhost:1337/adminPanel
+    auth: (req, res, next) => {       //Auth function called for each route. You can customize authentication
+      return next();
+    },
+    doNotActuallyDeleteRecords: true, //If true, adds isDeleted field for all records & mark them isDeleted = true, instead of deleting from database
   },
 };
