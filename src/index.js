@@ -110,18 +110,7 @@ module.exports = function (sails) {
       } catch (err) {
         sails.log.error(err);
       }
-
-      // Check if isDeleted field is required for models
-      if (sails.config.adminJSPanel.doNotActuallyDeleteRecords) {
-        sails.log.info('[Sails Hook][adminJSPanel] : Checking if isDeleted field Exists for models.');
-        if (sails.config.models.attributes.isDeleted) {
-          sails.log.info('[Sails Hook][adminJSPanel] : isDeleted field exists, no action is required.');
-        } else {
-          sails.config.models.attributes.isDeleted = { type: 'boolean', defaultsTo: false };
-          sails.log.info('[Sails Hook][adminJSPanel] : isDeleted field is created for models.');
-        }
-      }
-
+     
       const { routes, assets } = AdminBro.Router;
 
       sails.on('router:before', () => {

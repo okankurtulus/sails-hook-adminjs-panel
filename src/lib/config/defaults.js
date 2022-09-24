@@ -17,12 +17,21 @@ module.exports = {
     /***************************************************************************
     | Most of the time, the following options does not need to be changed.
     | However, you are free to change and make it fit to your project constraints.
+    |
+    | Support For "isDeleted"
+    |
+    | If you would like your models not to be deleted, please add "isDeleted" field
+    | for them that is boolean and defaults to false. If you'd like isDeleted for all 
+    | of your models, you can also add a new attribute, in config/models.js
+    | as below:
+    |
+    | isDeleted: { type: 'boolean', defaultsTo: false },
+    |
     ***************************************************************************/
    
     rootPath: '/adminPanel',          //The path where the admin page will serve, ex: localhost:1337/adminPanel
     auth: (req, res, next) => {       //Auth function called for each route. You can customize authentication
       return next();
     },
-    doNotActuallyDeleteRecords: true, //If true, adds isDeleted field for all records & mark them isDeleted = true, instead of deleting from database
   },
 };
