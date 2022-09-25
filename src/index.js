@@ -27,24 +27,30 @@ const injectCrsfIfRequired = (originalResponse, request, context) => {
   return originalResponse
 }
 
-function autoBindSailsModels() {
+function autoBindSailsModels(sails) {
   const resources = [];
-  const models = sails.hooks.orm.models;
-  Object.entries(models).forEach(([key, value]) => {
-    const prototype = Object.getPrototypeOf(value);
-    if (prototype.hasSchema) {
-      resources.push({
-        resource: prototype,
-        options: {
-          actions: {
-            edit: { after: [injectCrsfIfRequired] },
-            delete: { after: [injectCrsfIfRequired] },
-            bulkDelete: { after: [injectCrsfIfRequired] },
-            new: {  after: [injectCrsfIfRequired] } },
+  if (sails
+    && sails.hooks
+    && sails.hooks.orm
+    && sails.hooks.orm.models) {
+    const models = sails.hooks.orm.models;
+    Object.entries(models).forEach(([key, value]) => {
+      const prototype = Object.getPrototypeOf(value);
+      if (prototype.hasSchema) {
+        resources.push({
+          resource: prototype,
+          options: {
+            actions: {
+              edit: { after: [injectCrsfIfRequired] },
+              delete: { after: [injectCrsfIfRequired] },
+              bulkDelete: { after: [injectCrsfIfRequired] },
+              new: { after: [injectCrsfIfRequired] }
+            },
           },
         });
       }
-  });
+    });
+  }
   return resources;
 }
 
@@ -114,8 +120,9 @@ module.exports = function (sails) {
       const { routes, assets } = AdminBro.Router;
 
       sails.on('router:before', () => {
-        const sailsModels = autoBindSailsModels();
-
+        
+        const sailsModels = autoBindSailsModels(sails);
+        
         const adminBro = new AdminBro({
           database: [],
           resources: sailsModels,
