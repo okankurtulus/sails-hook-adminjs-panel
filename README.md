@@ -1,8 +1,3 @@
-
-# sails-hook-adminjs
-
-Sails JS Hook to auto generate admin screens for models (Thanks to AdminJS)
-
 # Sails Hook For Auto Generated Admin Panel (Using AdminJS)
 
 Sails Hook for auto generated admin panel for sails v.1.0.0+. Sails JS is so powerfull but managing models and creating pages for basic crud operations sometimes can be an issue. That's why this hook is created. It creates admin panel for all models with crud operations and also supports filters and batch operations.
@@ -17,7 +12,7 @@ No dependency is required, just install the hook & it should work seamlessly wit
 
 ### Config Options and their description
 
-When you install this hook in your sails project, it first start it detects if configuration file is present in your sails config directory or not, if not, then it will create config file with default options, which can be edited later. Options are:
+When you install this hook in your sails project, it first detects if configuration file is present in your sails config directory or not, if not, then it will create config file with default options, which can be edited later. Options are:
 
 * `rootPath` :
 
