@@ -36,19 +36,17 @@ function autoBindSailsModels(sails) {
     const models = sails.hooks.orm.models;
     Object.entries(models).forEach(([key, value]) => {
       const prototype = Object.getPrototypeOf(value);
-      if (prototype.hasSchema) {
-        resources.push({
-          resource: prototype,
-          options: {
-            actions: {
-              edit: { after: [injectCrsfIfRequired] },
-              delete: { after: [injectCrsfIfRequired] },
-              bulkDelete: { after: [injectCrsfIfRequired] },
-              new: { after: [injectCrsfIfRequired] }
-            },
+      resources.push({
+        resource: prototype,
+        options: {
+          actions: {
+            edit: { after: [injectCrsfIfRequired] },
+            delete: { after: [injectCrsfIfRequired] },
+            bulkDelete: { after: [injectCrsfIfRequired] },
+            new: { after: [injectCrsfIfRequired] }
           },
-        });
-      }
+        },
+      });
     });
   }
   return resources;

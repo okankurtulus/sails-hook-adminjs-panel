@@ -1,6 +1,6 @@
 {
   "name": "sails-hook-adminjs-panel",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "SailsJS hook to use magic of AdminJS seamlessly",
   "main": "src/index.js",
   "scripts": {
