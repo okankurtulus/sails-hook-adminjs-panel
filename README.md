@@ -8,7 +8,11 @@ Sails Hook for auto generated admin panel for sails v.1.0.0+. Sails JS is so pow
 
 # Dependencies
 
-No dependency is required, just install the hook & it should work seamlessly with waterline orm. If you have other orm tool configured, you should also configure models to use related adapter. Please check [**AdminJS**](https://github.com/SoftwareBrothers/adminjs) for further information.
+* Sails >0.12 or >1.0
+
+* Waterline ORM (Default for Sails)
+
+No specific dependency is required, just install the hook & it should work seamlessly with waterline orm. If you have other orm tool configured, you should also configure models to use related adapter. Please check [**AdminJS**](https://github.com/SoftwareBrothers/adminjs) for further information.
 
 ### Config Options and their description
 

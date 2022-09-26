@@ -1,6 +1,6 @@
 {
   "name": "sails-hook-adminjs-panel",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "SailsJS hook to use magic of AdminJS seamlessly",
   "main": "src/index.js",
   "scripts": {
@@ -26,12 +26,17 @@
     "sails": "^1.0.0"
   },
   "keywords": [
+    "sails-hook",
     "sails",
-    "adminbro",
-    "adminbrojs",
+    "sails.js",
+    "hook",
     "admin",
-    "panel",
-    "sails"
+    "admin-panel",
+    "adminpanel",
+    "adminbro",
+    "adminbro-js",
+    "adminjs",
+    "panel"
   ],
   "author": "Okan Kurtulus <[okankurtulus@gmail.com](mailto:okankurtulus@gmail.com)>",
   "license": "MIT"
