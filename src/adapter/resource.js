@@ -86,7 +86,6 @@ class Resource extends BaseResource {
     }
     async create(params) {
         const parsedParams = this.parseParams(params);
-        console.log(`parsedParams: ${JSON.stringify(parsedParams)}`);
         const item = await sails.hooks.orm.models[this.ORMModel.identity].create(params);
         const baseItem = new BaseRecord(item, this);
         const json = baseItem.toJSON();
