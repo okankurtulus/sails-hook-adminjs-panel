@@ -33,5 +33,6 @@ module.exports = {
     auth: (req, res, next) => {       //Auth function called for each route. You can customize authentication
       return next();
     },
+    adminJSOptions: {},              //You can place any additional admin JS options here. https://github.com/SoftwareBrothers/adminjs/blob/master/src/adminjs-options.interface.ts
   },
 };

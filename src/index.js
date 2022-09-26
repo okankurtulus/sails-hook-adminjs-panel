@@ -139,6 +139,7 @@ module.exports = function (sails) {
             softwareBrothers: false,
             logo: '/images/logo.png',
           },
+          ...(sails.config.adminJSPanel.adminJSOptions ?? {}),
         });
 
 
