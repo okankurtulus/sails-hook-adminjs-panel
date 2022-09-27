@@ -6,6 +6,14 @@ Sails Hook for auto generated admin panel for sails v.1.0.0+. Sails JS is so pow
 
 `npm install --save sails-hook-adminjs-panel`
 
+# Screenshots
+
+![AdminJS Panel Models](https://raw.githubusercontent.com/okankurtulus/blob/main/images/hookAdminJS_ss1.png)
+
+#
+
+![AdminJS Panel Filters](https://raw.githubusercontent.com/okankurtulus/blob/main/images/hookAdminJS_ss2.png)
+
 # Dependencies
 
 * Sails >0.12 or >1.0
