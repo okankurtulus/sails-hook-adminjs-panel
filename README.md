@@ -30,13 +30,51 @@ When you install this hook in your sails project, it first detects if configurat
 
     This is the route where your adminpanel will be loaded. You can configure this parameter according to your requests. By default `localhost:1337/adminPanel` will be used.
 
+    ```
+    rootPath: '/adminPanel',
+    ```
+
 * `auth` :
 
     auth hook function will be processed for each admin panel route, you can configure any authentication behaviour in this function.
 
+    ```
+    auth: (req, res, next) => {
+      return next();
+    },
+    ```
+
+* `parseResources` :
+
+    parseResources function will be processed each time you lift the app. You can modify resources and add any localization, navigation grouping and much more customization. [**Admin JS Resource Options**](https://github.com/SoftwareBrothers/adminjs/blob/master/src/backend/decorators/resource/resource-options.interface.ts)
+
+    ```
+    parseResources: (resources) => {
+      resources.map((item) => {
+        switch (item.resource.identity) {
+          case 'user':
+            item.options.navigation = navigationUserGroup;
+          default: break;
+        }
+      });
+      return resources;
+    },
+    ```
+
 * `adminJSOptions` :
 
-    You can place any additional Admin JS Options like resource customization, branding options or localization parameters here. For further details please check   . [**Admin JS options**](https://github.com/SoftwareBrothers/adminjs/blob/master/src/adminjs-options.interface.ts#L53)
+    You can place any additional Admin JS Options like resource customization, branding options or localization parameters here. For further details please check   . [**Admin JS Options**](https://github.com/SoftwareBrothers/adminjs/blob/master/src/adminjs-options.interface.ts#L53)
+
+    ```
+    adminJSOptions: {
+      locale: locale,
+      branding: {
+        companyName: 'AdminJS-Panel',
+        softwareBrothers: true,
+        logo: '/images/logo.png',
+      },
+    },
+    ```
 
 ### Support for "isDeleted" field in Models
 
