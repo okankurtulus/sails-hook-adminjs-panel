@@ -9,9 +9,7 @@ const Dashboard = (props) => {
     style={{display:'flex', justifyContent:'center', alignItems:'center', alignContent: 'center', height: '100%'}}
     >
       <div class="text-div">
-        <p class="event_desc">
-          AdminJS Panel
-        </p>
+          <img src='/images/logo.png'></img>
       </div>
     </div>
   </>

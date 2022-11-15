@@ -118,12 +118,10 @@ module.exports = function (sails) {
       const { routes, assets } = AdminBro.Router;
 
       sails.on('router:before', () => {
-        
         const sailsModels = autoBindSailsModels(sails);
-        
         const adminBro = new AdminBro({
           database: [],
-          resources: sailsModels,
+          resources: sails.config.adminJSPanel.parseResources(sailsModels),
           rootPath: sails.config.adminJSPanel.rootPath,
           dashboard: {
             component: AdminBro.bundle('./lib/react/my-dashboard-component')

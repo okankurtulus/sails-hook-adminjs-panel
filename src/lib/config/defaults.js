@@ -11,6 +11,21 @@
 * https://github.com/okankurtulus/sails-hook-adminjs-panel
 */
 
+const navigationUserGroup = {
+  name: 'User Section',
+  //Link for icons https://www.carbondesignsystem.com/guidelines/icons/library/
+  icon: 'User',
+};
+
+const locale = {
+  translations: {
+    labels: {                 //You can set title for model Items here https://docs.adminjs.co/basics/resource#resource-translations
+      navigation: 'Main Navigation',
+      user: 'People',
+    },
+  }
+};
+
 module.exports = {
   adminJSPanel: {
 
@@ -33,6 +48,23 @@ module.exports = {
     auth: (req, res, next) => {       //Auth function called for each route. You can customize authentication
       return next();
     },
-    adminJSOptions: {},              //You can place any additional admin JS options here. https://github.com/SoftwareBrothers/adminjs/blob/master/src/adminjs-options.interface.ts
+    parseResources: (resources) => {  //Parse Resource Objects. You can manage model properties here. https://github.com/SoftwareBrothers/adminjs/blob/master/src/backend/decorators/resource/resource-options.interface.ts
+      resources.map((item) => {
+        switch (item.resource.identity) {
+          case 'user':
+            item.options.navigation = navigationUserGroup;
+          default: break;
+        }
+      });
+      return resources;
+    },
+    adminJSOptions: {               //You can place any additional admin JS options here. https://github.com/SoftwareBrothers/adminjs/blob/master/src/adminjs-options.interface.ts
+      locale: locale,               //Locale Settings https://github.com/SoftwareBrothers/adminjs/blob/master/src/locale/en.ts
+      branding: {
+        companyName: 'AdminJS-Panel',
+        softwareBrothers: true,
+        logo: '/images/logo.png',
+      },
+    },
   },
 };
